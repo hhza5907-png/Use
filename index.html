@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة التميز التفاعلية: رحلة في تذوق نص كفر قاسم</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+body { font-family: 'Cairo', sans-serif; background: radial-gradient(circle at center, #0d1b2a, #1b263b, #0d1b2a); color: #fff; min-height: 100vh; overflow-x: hidden; }
+.amiri { font-family: 'Amiri', serif; }
+.glow-radial { background: radial-gradient(circle at center, rgba(0, 245, 212, 0.15) 0%, rgba(13, 27, 42, 0) 70%); }
+.neon-border { box-shadow: 0 0 15px rgba(0, 245, 212, 0.4), inset 0 0 15px rgba(0, 245, 212, 0.2); border: 2px solid #00f5d4; }
+.neon-text { text-shadow: 0 0 10px rgba(0, 245, 212, 0.7), 0 0 20px rgba(0, 245, 212, 0.4); }
+.btn-glow:hover { box-shadow: 0 0 20px rgba(0, 245, 212, 0.8); transform: translateY(-2px); }
+.cert-border { border: 12px double #00f5d4; background: radial-gradient(circle at center, #1b263b, #0d1b2a); }
+::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #0d1b2a; } ::-webkit-scrollbar-thumb { background: #00f5d4; border-radius: 4px; }
+.correct-btn { background: #065f46 !important; border-color: #10b981 !important; color: #fff !important; }
+.wrong-btn { background: #7f1d1d !important; border-color: #ef4444 !important; color: #fff !important; }
+.match-item { cursor: pointer; transition: all 0.2s ease; }
+.match-item.selected { border-color: #00f5d4; background-color: rgba(0, 245, 212, 0.2); }
+.match-item.matched { opacity: 0.5; pointer-events: none; border-color: #10b981; }
+@media print { header, footer, #actions-top { display: none !important; } body { background: #fff; color: #000; } #screen-cert { display: block !important; } .cert-border { color: #000; background: #fff; border-color: #000; } }
+</style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+<header class="bg-slate-900/80 backdrop-blur border-b border-cyan-500/30 p-4 sticky top-0 z-50">
+  <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-4">
+    <div class="flex items-center gap-3">
+      <i class="fa-solid fa-graduation-cap text-3xl text-cyan-400 animate-bounce"></i>
+      <div>
+        <h1 class="text-xl font-bold text-cyan-300 neon-text">منصة التميز التفاعلية: نص كفر قاسم</h1>
+        <p class="text-xs text-slate-300">الصف الثالث الثانوي | المدرسة: <span class="text-cyan-400 font-semibold">عثمان بن عفان</span> | المدرس: <span class="text-cyan-400 font-semibold">عبده حاتم صالح</span></p>
+      </div>
+    </div>
+    <div id="stats-header" class="hidden flex items-center gap-4 md:gap-6 bg-slate-800/80 px-4 py-2 rounded-full border border-cyan-500/40">
+      <div class="text-center"><span class="text-xs text-slate-400 block">النقاط</span><span id="score-display" class="text-lg font-black text-amber-400">0</span></div>
+      <div class="h-6 w-px bg-slate-700"></div>
+      <div class="text-center"><span class="text-xs text-slate-400 block">التقدم</span><span id="progress-display" class="text-lg font-black text-cyan-400">0/50</span></div>
+      <div class="h-6 w-px bg-slate-700"></div>
+      <div class="text-center"><span class="text-xs text-slate-400 block">المحور</span><span id="axis-display" class="text-xs font-bold text-emerald-400">الأول</span></div>
+      <div class="h-6 w-px bg-slate-700"></div>
+      <div class="text-center"><span class="text-xs text-slate-400 block">الوقت</span><span id="timer-display" class="text-lg font-black text-rose-400">00:00</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="flex-grow flex items-center justify-center p-4 relative glow-radial">
+  <!-- الشاشة الأولى: الترحيب -->
+  <div id="screen-welcome" class="max-w-2xl w-full bg-slate-900/90 rounded-2xl p-8 neon-border text-center space-y-6">
+    <div class="inline-block p-4 rounded-full bg-cyan-500/10 text-cyan-400 text-5xl mb-2"><i class="fa-solid fa-gamepad"></i></div>
+    <h2 class="text-3xl font-extrabold text-cyan-300 neon-text">أهلاً بك يا بطل اللغة العربية!</h2>
+    <p class="text-slate-300 leading-relaxed text-sm md:text-base">استعد لخوض تجربة تفاعلية استثنائية في تذوق النص الشعري <span class="text-amber-400 font-bold">(كفر قاسم - محمود درويش)</span>.<br>تتكون التحديات من <strong>50 سؤالاً ذكياً</strong> مقسمة على 4 محاور شائقة!</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+      <div class="bg-slate-800 p-3 rounded-xl border border-emerald-500/30"><b class="text-emerald-400 block text-base">15</b>صح / خطأ</div>
+      <div class="bg-slate-800 p-3 rounded-xl border border-cyan-500/30"><b class="text-cyan-400 block text-base">20</b>اختيار من متعدد</div>
+      <div class="bg-slate-800 p-3 rounded-xl border border-amber-500/30"><b class="text-amber-400 block text-base">5</b>المصطلح المناسب</div>
+      <div class="bg-slate-800 p-3 rounded-xl border border-rose-500/30"><b class="text-rose-400 block text-base">10</b>مزاوجة وربط</div>
+    </div>
+    <div class="bg-slate-800/60 p-4 rounded-xl border border-cyan-500/20 text-right space-y-3">
+      <label class="block text-sm font-bold text-cyan-300">أدخل اسم الطالب ثلاثياً لبدء التحدي وإصدار الشهادة:</label>
+      <input type="text" id="student-name" placeholder="مثال: محمد أحمد العتيبي" class="w-full bg-slate-950 border border-cyan-500/50 rounded-lg p-3 text-cyan-100 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/50">
+      <p id="name-error" class="text-rose-400 text-xs hidden">يرجى كتابة الاسم للبدء.</p>
+    </div>
+    <button onclick="startGame()" class="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 font-black text-lg rounded-xl shadow-lg shadow-cyan-500/30 btn-glow transition-all">ابدأ التحدي الآن <i class="fa-solid fa-rocket mr-2"></i></button>
+  </div>
+
+  <!-- الشاشة الثانية: اللعبة -->
+  <div id="screen-game" class="hidden max-w-4xl w-full bg-slate-900/95 rounded-2xl p-6 md:p-8 neon-border space-y-6 relative">
+    <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden border border-slate-700">
+      <div id="progress-bar" class="bg-gradient-to-r from-cyan-500 to-emerald-400 h-2.5 rounded-full transition-all duration-500" style="width:0%"></div>
+    </div>
+    <div class="flex justify-between items-center text-xs text-slate-400">
+      <span id="question-category" class="bg-cyan-950 text-cyan-300 px-3 py-1 rounded-full border border-cyan-500/30">المحور الأول</span>
+      <span id="question-number-tag" class="font-bold text-slate-300">السؤال 1 من 50</span>
+    </div>
+    <div class="bg-slate-800/80 p-6 rounded-xl border border-cyan-500/20">
+      <h3 id="question-text" class="text-lg md:text-xl font-bold text-cyan-100 leading-relaxed"></h3>
+    </div>
+    
+    <div id="answer-area" class="space-y-4"></div>
+
+    <div id="feedback-box" class="hidden p-4 rounded-xl text-center space-y-3">
+      <div id="feedback-content" class="text-lg font-bold"></div>
+      <div id="rationale-content" class="text-sm text-slate-300 bg-slate-950/60 p-3 rounded-lg border border-slate-800 text-right leading-relaxed"></div>
+      <button onclick="nextQuestion()" class="px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 font-bold rounded-xl shadow-lg btn-glow">السؤال التالي <i class="fa-solid fa-arrow-left ml-2"></i></button>
+    </div>
+  </div>
+
+  <!-- الشاشة الثالثة: الشهادة والنتيجة -->
+  <div id="screen-cert" class="hidden max-w-4xl w-full space-y-6">
+    <div id="actions-top" class="flex justify-between items-center bg-slate-900/90 p-4 rounded-xl neon-border">
+      <h3 class="text-lg font-bold text-cyan-300">🎉 تهانينا! أتممت التحدي بنجاح!</h3>
+      <div class="flex gap-3">
+        <button onclick="window.print()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 font-bold rounded-lg text-sm transition-all">🖨️ طباعة الشهادة</button>
+        <button onclick="restartGame()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 font-bold rounded-lg text-sm transition-all">🔄 إعادة التحدي</button>
+      </div>
+    </div>
+    <div id="certificate" class="cert-border p-8 md:p-12 text-center rounded-2xl relative overflow-hidden bg-slate-900 shadow-2xl">
+      <div class="border-2 border-cyan-500/30 p-6 md:p-10 rounded-xl space-y-6 relative z-10">
+        <div class="flex justify-between items-center border-b border-cyan-500/30 pb-4">
+          <div class="text-right"><p class="text-xs text-cyan-400 font-bold">مدرسة: عثمان بن عفان</p><p class="text-xs text-slate-400">مدرس المادة: عبده حاتم صالح</p></div>
+          <i class="fa-solid fa-award text-5xl text-amber-400 animate-pulse"></i>
+          <div class="text-left"><p class="text-xs text-cyan-400 font-bold">المادة: اللغة العربية</p><p class="text-xs text-slate-400">الصف: الثالث الثانوي</p></div>
+        </div>
+        <div>
+          <h2 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-cyan-300 to-amber-400">شهادة تفوق واستحقاق</h2>
+          <p class="text-sm text-cyan-200 tracking-widest mt-1">Certificate of Academic Excellence</p>
+        </div>
+        <p class="text-slate-300">تشهد إدارة مدرسة عثمان بن عفان ومعلم المادة الأستاذ <strong>عبده حاتم صالح</strong> بأن الطالب البطل:</p>
+        <div><span id="cert-student-name" class="amiri text-3xl md:text-5xl font-bold text-cyan-300 border-b-2 border-amber-400 px-6 py-1 inline-block">اسم الطالب</span></div>
+        <p class="text-slate-300 max-w-2xl mx-auto leading-relaxed">قد اجتاز بنجاح اللعبة التفاعلية الشاملة لنص <span class="text-amber-300 font-bold">"كفر قاسم"</span> للشاعر محمود درويش، وحقق النتيجة التالية:<br>
+          <span id="cert-score" class="text-3xl font-black text-amber-400 my-2 inline-block">50 / 50</span><br>
+          <span id="cert-grade" class="text-emerald-400 font-bold text-xl"></span><br>
+          <span id="cert-time" class="text-xs text-slate-400 mt-2 block"></span>
+        </p>
+        <div class="grid grid-cols-2 gap-8 pt-8 border-t border-cyan-500/30 text-sm">
+          <div><p class="text-slate-400">مدرس المادة</p><p class="text-cyan-300 font-bold text-lg">أ. عبده حاتم صالح</p><p class="text-xs text-emerald-400">توقيع معتمد ✓</p></div>
+          <div><p class="text-slate-400">إدارة المدرسة</p><p class="text-cyan-300 font-bold text-lg">مدرسة عثمان بن عفان</p><p class="text-xs text-emerald-400">ختم التميز ✓</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="bg-slate-950 p-4 border-t border-slate-800 text-center text-xs text-slate-500">جميع الحقوق محفوظة © 2026 - مدرسة عثمان بن عفان | إعداد الأستاذ عبده حاتم صالح</footer>
+
+<script>
+// توليد باقي الأسئلة الخمسين بالكامل
+const questionsData = [
+  // --- المحور الأول: صح أم خطأ (15 سؤالاً) ---
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"جمع كلمة (صحراء) الواردة في النص هو: صحارٍ، وصحراوات، وصحارى.", correct:true, rationale:"صحيح، ورد في المعجم أن كلمة (صحراء) تُجمع على (صحارٍ، صحراوات، صحارى)."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"الفعل (مَرُّوا) في عبارة (مروا على صحراء قلبي) أسلوب إنشائي يُفيد التهديد والوعيد.", correct:false, rationale:"خطأ، (مروا) أسلوب خبري ساعد في رسم ملامح المشهد الحركي للفدائيين."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"عبارة (ذراع نخلة) كناية عن الأمل والحيوية وسط القحط.", correct:true, rationale:"صحيح، النخلة رمز للأمل والحيوية والاستمرار."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"كلمة (ذراع) مؤنثة ووزنها الصرفي (فِعال)، وجمع القلة منها هو (أَذْرُع).", correct:true, rationale:"صحيح، ذراع مؤنثة على وزن فِعال، وجمع القلة منها أذرع."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"الجمع بين (حاملين) و(تاركين) يمثل طباقاً يجمع بين حمل الأمل وترك الأثر.", correct:true, rationale:"صحيح، الجمع يبرز التضاد والمكاملة بين حمل الأمل وترك الأثر الحي."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"كلمة (زهر) اسم علم مؤنث مفرد لا جمع له في اللغة.", correct:false, rationale:"خطأ، (زهر) اسم جنس جمعي مفرده زهرة، وجمعه زهور وزهرات وأزهار."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"الوزن الصرفي لكلمة (القرنفل) هو (فُعلّل).", correct:true, rationale:"صحيح، الوزن الصرفي لـ (القرنفل) هو فُعلّل."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"الاستفهام في قوله (ماذا حملت لعشر شمعات) غرضه البلاغي النفي والتعظيم.", correct:false, rationale:"خطأ، الاستفهام إنكاري للتقليل والعتاب واللوم الشديد."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"تركيب (عشر شمعات) استعارة تصريحية عن الفدائيين الشهداء.", correct:true, rationale:"صحيح، شمعات استعارة تصريحية رمز للشهداء الذين أضاءوا طريق الحرية."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"المحسن البديعي بين (الحمائم) و(الجماجم) هو جناس تام يفيد التوكيد.", correct:false, rationale:"خطأ، بينهما جناس ناقص وطباق معنوي بين السلام والموت."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"تكرار عبارة (أن تقاوم) يهدف إلى تأكيد الإصرار على المقاومة.", correct:true, rationale:"صحيح، التكرار يخدم التوكيد وتأكيد الإصرار على المقاومة."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"تقديم المتعلق في قوله (في الليل دقوا كل باب) يدل على الرعب والخوف من العدو.", correct:false, rationale:"خطأ، تقديم (في الليل) يدل على الحذر واليقظة والسرية والكتمان."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"في قوله (إنا نسمد ليلكم) استعارة مكنية تشبه عمل الشهداء بالسماد والوقود للأجيال.", correct:true, rationale:"صحيح، استعارة مكنية تصف تهيئة المناخ وإعداد الجيل الجديد."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"استقال محمود درويش من منظمة التحرير بعد خمس سنوات احتجاجاً على اتفاق أوسلو.", correct:true, rationale:"صحيح، استقال الشاعر احتجاجاً على اتفاق أوسلو."},
+  {axis:1, axisTitle:"المحور الأول: صح أم خطأ", type:"tf", question:"تعتمد قصيدة كفر قاسم على نظام البحور الخليلية والبيت ذي الشطرين.", correct:false, rationale:"خطأ، النص من الشعر الحر (المدرسة الواقعية) يقوم على التفعيلة والسطر الشعري."},
+
+  // --- المحور الثاني: اختيار من متعدد (20 سؤالاً) ---
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"ما المعنى البلاغي للتعبير (صحراء قلبي)؟", options:["تشبيه بليغ بالإضافة يبرز الخواء والظمأ للحرية", "استعارة مكنية تفيد التفاؤل والبهجة", "كناية عن كثرة الرحال والأسفار", "مجاز مرسل علاقته المحلية"], correct:0, rationale:"تشبيه بليغ بالإضافة يبرز خواء القلب والظمأ الشديد للحرية."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"ما الذي يرمز إليه (زهر القرنفل)؟", options:["رمز التضحية والصمود والدم المرتبط بالتراب الفلسطيني", "رمز للهدوء والسكينة", "دلالة على المحاصيل الموسمية", "كناية عن قلة موارد القرى"], correct:0, rationale:"زهر القرنفل رمز التضحية والصمود وله مزية خاصة لارتباطه بالدم والتراب."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"تكرار الفعل (مَرُّوا) يحمل دلالة بلاغية هي:", options:["التتابع والحركة المستمرة للفدائيين", "التردد والشك", "التوقف عن المقاومة", "البكاء والرثاء"], correct:0, rationale:"تكرار (مروا) لدلالة التتابع والتواصل الحركي للفدائيين."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"قول الشاعر (وعلى شبابيك القرى رسموا بأعينهم أهلة) كناية عن:", options:["بداية الثورة المتجددة وإشعال الوعي", "الزينة والاحتفالات", "شدة الخوف والإغلاق", "اندثار المعالم"], correct:0, rationale:"كناية عن تجدد الأمل وبداية المقاومة."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"ما الغرض البلاغي في (يا كفر قاسم!)؟", options:["نداء للتعظيم والتذكير بقدسية المكان", "نداء للسخرية", "استفهام للتعجب", "أمر للحث"], correct:0, rationale:"نداء خرج للتعظيم والتذكير بقدسية المكان وإظهار الارتباط بالأرض."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"ما إعراب (تاركين) في قوله (تاركين أزيز نحلة)؟", options:["حال منصوبة وعلامة نصبها الياء", "مفعول به ثانٍ", "نعت مرفوع", "خبر مبتدأ محذوف"], correct:0, rationale:"(تاركين) حال منصوبة بالياء توحي بترك الأثر المستمر."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"المقصود بـ (الحمائم) في سياق النص؟", options:["أناشيد السلام لا الاستسلام", "الضعف والخضوع", "طيور الزينة", "الضحايا الخائفين"], correct:0, rationale:"(الحمائم) رمز للسلام الذي لا يتحقق إلا بالتضحيات."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"إعراب (غيرَ) في قوله (غيرَ المزيد):", options:["مفعول به (أو مستثنى)", "فاعل مرفوع", "نائب عن المفعول المطلق", "مضاف إليه"], correct:0, rationale:"تُعرب (غيرَ) مفعول به أو مستثنى حسب السياق البلاغي للنص."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"المقصود بـ (وصية الدم) هي:", options:["أن نقاوم ونستمر في الجهاد وعدم المساومة", "أن نكتفي برثاء الشهداء", "أن نطالب بالهدنة", "أن ننتقل للعيش في الخارج"], correct:0, rationale:"وصية الدم هي: (أن نقاوم) والاستمرار في النضال."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"ما الصورة البلاغية في (قالت عيونهم التي انطفأت)؟", options:["استعارة مكنية للتشخيص", "تشبيه مجمل", "استعارة تصريحية", "مجاز مرسل"], correct:0, rationale:"استعارة مكنية للتشخيص، جعل للعيون لساناً ينطق بالنصح والوصية."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"الباء في (بالنشيد) و (بالصمود) تفيد على التوالي:", options:["الاستعانة في الأولى، والسببية في الثانية", "الظرفية في الاثنين", "القسم والتوكيد", "الاستعلاء والمجاوزة"], correct:0, rationale:"الباء في (بالنشيد) للاستعانة، وفي (بالصمود) للسببية."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"ما الصورة في (براعم الضوء الجديد)؟", options:["استعارة تصريحية تشبه الأجيال بالبراعم", "تشبيه بليغ", "استعارة مكنية للجماد", "كناية عن قحط الأرض"], correct:0, rationale:"استعارة تصريحية تشبه الأجيال الصاعدة ببراعم الضوء."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"النداء في قوله (يا كفر قاسم لن ننام) يحيي في النفوس:", options:["روح الثأر وعدم نسيان الشهداء", "الاستسلام لليأس", "الهروب من الواقع", "التراجع عن التضحية"], correct:0, rationale:"يحيي روح الإصرار وعدم نسيان دماء الشهداء."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"ينتمي الشاعر محمود درويش إلى أي مدرسة شعرية؟", options:["المدرسة الواقعية (شعر التفعيلة)", "مدرسة الديوان", "مدرسة إحياء النهضة", "مدرسة المدارات الكلاسيكية"], correct:0, rationale:"ينتمي إلى المدرسة الواقعية والشعر الحر المستند إلى التفعيلة."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"علاقة جملة (نسمد ليلكم) بما قبلها هي علاقة:", options:["تعليل وتوضيح للهدف", "نتيجة غير متوقعة", "تضاد ومقابلة", "تفصيل بعد إجمال"], correct:0, rationale:"توضح الهدف والعلة من التضحيات والصمود."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"استخدام صيغة الجمع في (شبابيك القرى) يفيــد:", options:["العموم والشمول لكل أرض فلسطين", "التقليل والتحقير", "التخصيص بقرية واحدة", "الغموض والإبهام"], correct:0, rationale:"يفيد الشمول والعموم والتأكيد على وحدة المعاناة والتحدي."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"الرمز الأساسي لـ (الأهلة) في النص يرمز إلى:", options:["الأمل وبداية مرحلة جديدة من النضال", "شدة الظلمة والظلام", "مرور الأيام والأعوام", "تناقص أعداد الثوار"], correct:0, rationale:"الهلال رمز لبداية مرحلة جديدة وبزوغ فجر الثورة."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"الفعل (دقوا) في قوله (في الليل دقوا كل باب) يوحي بـ:", options:["الإصرار واليقظة والتصميم", "الخوف من المداهمة", "التطفل والتردد", "السعي للهرب"], correct:0, rationale:"يوحي بقوة الإرادة والتصميم على توعية الجميع."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"الدلالة البلاغية لتقديم الجار والمجرور (في الليل):", options:["التشويق والاختصاص والسرية", "إظهار الضعف", "إبطال العمل", "التعجب من الوقت"], correct:0, rationale:"التأكيد على السرية والتحركات التكتيكية في ظلمة الاحتلال."},
+  {axis:2, axisTitle:"المحور الثاني: اختيار من متعدد", type:"mcq", question:"أي من العبارات التالية تمثل المحور الأساسي لقصيدة كفر قاسم؟", options:["التأكيد على المقاومة الخالدة والتضحية بالأرواح", "الحزن والاستسلام للواقع المؤلم", "الوصف الطبيعي للقرى والمدن", "الفخر الذاتي والمباهاة الفردية"], correct:0, rationale:"القصيدة تجسد روح المقاومة والتضحية بالدماء من أجل الحرية."},
+
+  // --- المحور الثالث: المصطلح المناسب (5 أسئلة) ---
+  {axis:3, axisTitle:"المحور الثالث: المصطلح المناسب", type:"mcq", question:"المصطلح البلاغي للتعبير الذي يُراد به غير معناه الظاهر مع جواز إرادة المعنى الأصلي هو:", options:["الكناية", "الاستعارة التصريحية", "التشبيه المقلوب", "الجناس التام"], correct:0, rationale:"الكناية هي اللفظ المأخوذ مع إرادة ملازم معناه."},
+  {axis:3, axisTitle:"المحور الثالث: المصطلح المناسب", type:"mcq", question:"تشبيه حذف منه أداة التشبيه ووجه الشبه وترك الطرفان فقط يسمى:", options:["تشبيهاً بليغاً", "تشبيهاً تمثيلياً", "استعارة مكنية", "مجازاً مرسلاً"], correct:0, rationale:"التشبيه البليغ هو ما حذف منه الأداة ووجه الشبه مثل (صحراء قلبي)."},
+  {axis:3, axisTitle:"المحور الثالث: المصطلح المناسب", type:"mcq", question:"الشعر الذي يتحرر من القافية الموحدة والبيت ذي الشطرين ويشتق من التفعيلة يسمى:", options:["الشعر الحر (شعر التفعيلة)", "الشعر العمودي", "الموشحات الأندلسية", "الرباعيات الكلاسيكية"], correct:0, rationale:"شعر التفعيلة هو الشعر الحر الحديث الذي صيغت به القصيدة."},
+  {axis:3, axisTitle:"المحور الثالث: المصطلح المناسب", type:"mcq", question:"استعمال الكلمة في غير ما وضعت له لعلاقة غير المشابهة مع قرينة مانعة يسمى:", options:["مجازاً مرسلاً", "استعارة مكنية", "طباقاً سلباً", "جناساً محرفاً"], correct:0, rationale:"المجاز المرسل تكون علاقته غير المشابهة (كالسببية والحالية والمحلية)."},
+  {axis:3, axisTitle:"المحور الثالث: المصطلح المناسب", type:"mcq", question:"توافق فاصلتين أو كلمتين في الحرف الاخير مع اختلاف المعنى يُعرف في البديع بـ:", options:["الجناس", "السجع", "التضمين", "التناص"], correct:0, rationale:"الجناس هو تماثل اللفظين في النطق واختلافهما في المعنى."},
+
+  // --- المحور الرابع: مزاوجة وربط (10 أسئلة) ---
+  {axis:4, axisTitle:"المحور الرابع: مزاوجة وربط", type:"matching", question:"صل بين الصورة الشعريّة والرمز البلاغي المناسب لها:", pairs:[
+    {left:"زهر القرنفل", right:"الدم والتضحية وارتباط التراب"},
+    {left:"شبابيك القرى", right:"الشمول وعموم الأمل بالثورة"},
+    {left:"عشر شمعات", right:"رمز للشهداء الأبرار"},
+    {left:"أزيز نحلة", right:"الأثر المستمر والعمل الدؤوب"}
+  ], rationale:"تم الربط بنجاح بين الرموز الشعرية ودلالاتها البلاغية في النص!"},
+  {axis:4, axisTitle:"المحور الرابع: مزاوجة وربط", type:"matching", question:"صل الكلمة بوزنها الصرفي الصحيح:", pairs:[
+    {left:"القرنفل", right:"فُعلّل"},
+    {left:"ذراع", right:"فِعال"},
+    {left:"تاركين", right:"فَاعِلِينَ"},
+    {left:"صحراء", right:"فَعْلَاء"},
+  ], rationale:"تطابق ممتاز بين الكلمات وأوزانها الصرفية الصحيحة."},
+  {axis:4, axisTitle:"المحور الرابع: مزاوجة وربط", type:"matching", question:"صل التعبير البلاغي بنوعه المناسب:", pairs:[
+    {left:"صحراء قلبي", right:"تشبيه بليغ بالإضافه"},
+    {left:"ذراع نخلة", right:"كناية عن الأمل والتجدد"},
+    {left:"قالت عيونهم", right:"استعارة مكنية للتشخيص"},
+    {left:"الحمائم والجماجم", right:"جناس ناقص وتضاد معنوي"}
+  ], rationale:"ربط دقيق بين الأساليب البلاغية ونوعها التصنيفي."},
+  {axis:4, axisTitle:"المحور الرابع: مزاوجة وربط", type:"matching", question:"صل المفرد بجمعه الصحيح حسب المعاجم:", pairs:[
+    {left:"صحراء", right:"صحارى / صحارٍ"},
+    {left:"ذراع", right:"أذرع / ذُرعان"},
+    {left:"زهرة", right:"زهر / أزهار"},
+    {left:"باب", right:"أبواب"}
+  ], rationale:"إجابة صحيحة في ربط الجموع بالمفردات اللغوية."},
+  {axis:4, axisTitle:"المحور الرابع: مزاوجة وربط", type:"matching", question:"صل الأداة/الحرف بدلالته الإعرابية أو البلاغية:", pairs:[
+    {left:"الباء في (بالنشيد)", right:"حرف يفيد الاستعانة"},
+    {left:"الباء في (بالصمود)", right:"حرف يفيد السببية"},
+    {left:"تكرار (أن تقاوم)", right:"يفيد التوكيد والإصرار"},
+    {left:"تقديم (في الليل)", right:"يفيد القصر والاختصاص"}
+  ], rationale:"ربط موفق بين المعاني النحوية والبلاغية للأدوات."},
+  {axis:4, axisTitle:"المحور الرابع: مزاوجة وربط", type:"matching", question:"صل الأفكار الجزئية بالمحاور المعنوية للنص:", pairs:[
+    {left:"المرور على صحراء القلب", right:"بداية بعث الأمل واستنفار الوعي"},
+    {left:"رسم الأهلة", right:"إبقاء جذوة الثورة متقدة"},
+    {left:"التسميد بالدماء", right:"إعداد الأجيال القادمة للحرية"},
+    {left:"وصية العيون المنطفئة", right:"عدم التنازل والاستمرار في المقاومة"}
+  ], rationale:"تحليل فكري ممتاز لأبعاد القصيدة المعنوية."},
+  {axis:4, axisTitle:"المحور الرابع: مزاوجة وربط", type:"matching", question:"صل الشخصية/المفهوم بالتعريف الصحيح:", pairs:[
+    {left:"محمود درويش", right:"شاعر كفر قاسم وشاعر القضية"},
+    {left:"عثمان بن عفان", right:"اسم المدرسة المجاهدة العلمية"},
+    {left:"عبده حاتم صالح", right:"مدرس المادة ومعد المنصة"},
+    {left:"أوسلو", right:"الاتفاقية التي استقال الشاعر بسببها"}
+  ], rationale:"ربط معلوماتي صحيح 100%."},
+  {axis:4, axisTitle:"المحور الرابع: مزاوجة وربط", type:"matching", question:"صل نوع الأسلوب بغرضه البلاغي:", pairs:[
+    {left:"يا كفر قاسم!", right:"نداء للتعظيم والاشتياق"},
+    {left:"ماذا حملت؟", right:"استفهام إنكاري لللوم والتعجب"},
+    {left:"لن ننام", right:"نفي يفيد التأكيد والتصميم"},
+    {left:"دقوا كل باب", right:"خبر يفيد إثارة الهمم"}
+  ], rationale:"إجابة متقنة في تحديد أغراض الأساليب الإنشائية والخبرية."},
+  {axis:4, axisTitle:"المحور الرابع: مزاوجة وربط", type:"matching", question:"صل الكلمة بمترادفها المعجمي في النص:", pairs:[
+    {left:"أزيز", right:"صوت حفيف ورنين دؤوب"},
+    {left:"نسمد", right:"نقوي ونخصب بالسماد"},
+    {left:"أهلة", right:"مفردها هلال وهو بزوغ الضوء"},
+    {left:"انطفأت", right:"خبت وتوفيت (استشهدت)"}
+  ], rationale:"تحديد ممتاز للمترادفات والمعاني اللغوية."},
+  {axis:4, axisTitle:"المحور الرابع: مزاوجة وربط", type:"matching", question:"صل كل عنصر شعري بخاصيته:", pairs:[
+    {left:"التفعيلة", right:"الوحدة الموسيقية البديلة للبيت"},
+    {left:"السطر الشعري", right:"البناء الهندسي للقصيدة الحديثة"},
+    {left:"الرمز الشعري", right:"إيحاء بصري وفكري مكثف"},
+    {left:"التكرار اللفظي", right:"ترسيخ المفهوم البلاغي"}
+  ], rationale:"ربط موفق بين مصطلحات الشعر الحر وتطبيقها."}
+];
+
+// متغيرات حالة اللعبة
+let currentQuestionIndex = 0;
+let score = 0;
+let studentName = "";
+let timerInterval = null;
+let secondsElapsed = 0;
+
+// المؤثرات الصوتية الصوتية (Web Audio API)
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(type) {
+  try {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    if (type === 'correct') {
+      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.25);
+    } else if (type === 'wrong') {
+      osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+      osc.frequency.setValueAtTime(164.81, audioCtx.currentTime + 0.1); // E3
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.3);
+    }
+  } catch (e) {
+    console.log("Audio play error:", e);
+  }
+}
+
+// بدء اللعبة
+function startGame() {
+  const input = document.getElementById("student-name");
+  const nameError = document.getElementById("name-error");
+  if (!input.value.trim()) {
+    nameError.classList.remove("hidden");
+    return;
+  }
+  nameError.classList.add("hidden");
+  studentName = input.value.trim();
+  
+  document.getElementById("screen-welcome").classList.add("hidden");
+  document.getElementById("screen-game").classList.remove("hidden");
+  document.getElementById("stats-header").classList.remove("hidden");
+  document.getElementById("stats-header").classList.add("flex");
+  
+  score = 0;
+  currentQuestionIndex = 0;
+  secondsElapsed = 0;
+  startTimer();
+  updateHeader();
+  renderQuestion();
+}
+
+// المؤقت الزمني
+function startTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    secondsElapsed++;
+    const mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+    const secs = (secondsElapsed % 60).toString().padStart(2, '0');
+    document.getElementById("timer-display").innerText = `${mins}:${secs}`;
+  }, 1000);
+}
+
+function updateHeader() {
+  document.getElementById("score-display").innerText = score;
+  document.getElementById("progress-display").innerText = `${currentQuestionIndex + 1}/${questionsData.length}`;
+  
+  const currentQ = questionsData[currentQuestionIndex];
+  const axisNames = ["الأول", "الثاني", "الثالث", "الرابع"];
+  document.getElementById("axis-display").innerText = axisNames[currentQ.axis - 1];
+  
+  const progressPercent = ((currentQuestionIndex) / questionsData.length) * 100;
+  document.getElementById("progress-bar").style.width = `${progressPercent}%`;
+}
+
+// عرض السؤال الحالي
+function renderQuestion() {
+  const q = questionsData[currentQuestionIndex];
+  document.getElementById("question-category").innerText = q.axisTitle;
+  document.getElementById("question-number-tag").innerText = `السؤال ${currentQuestionIndex + 1} من ${questionsData.length}`;
+  document.getElementById("question-text").innerText = q.question;
+  
+  const answerArea = document.getElementById("answer-area");
+  answerArea.innerHTML = "";
+  
+  document.getElementById("feedback-box").classList.add("hidden");
+
+  if (q.type === "tf") {
+    answerArea.className = "grid grid-cols-2 gap-4";
+    answerArea.innerHTML = `
+      <button onclick="checkAnswer(true)" class="answer-btn p-4 rounded-xl border border-cyan-500/30 bg-slate-800 hover:bg-slate-700 font-bold text-lg text-emerald-400 flex items-center justify-center gap-2 transition-all"><i class="fa-solid fa-check"></i> صح</button>
+      <button onclick="checkAnswer(false)" class="answer-btn p-4 rounded-xl border border-cyan-500/30 bg-slate-800 hover:bg-slate-700 font-bold text-lg text-rose-400 flex items-center justify-center gap-2 transition-all"><i class="fa-solid fa-xmark"></i> خطأ</button>
+    `;
+  } else if (q.type === "mcq") {
+    answerArea.className = "space-y-3";
+    q.options.forEach((opt, idx) => {
+      answerArea.innerHTML += `
+        <button onclick="checkAnswer(${idx})" class="answer-btn w-full text-right p-4 rounded-xl border border-cyan-500/30 bg-slate-800 hover:bg-slate-700 font-semibold text-slate-100 flex items-center justify-between transition-all">
+          <span>${opt}</span>
+          <span class="text-xs bg-slate-900 border border-slate-700 px-2.5 py-1 rounded-md text-cyan-400">${String.fromCharCode(65 + idx)}</span>
+        </button>
+      `;
+    });
+  } else if (q.type === "matching") {
+    renderMatchingQuestion(q);
+  }
+}
+
+// التعامل مع سؤال المزاوجة
+let selectedLeft = null;
+let matchedCount = 0;
+let userPairs = {};
+
+function renderMatchingQuestion(q) {
+  const answerArea = document.getElementById("answer-area");
+  answerArea.className = "space-y-4";
+  selectedLeft = null;
+  matchedCount = 0;
+  userPairs = {};
+
+  const shuffledRight = [...q.pairs].map(p => p.right).sort(() => Math.random() - 0.5);
+
+  let html = `<p class="text-xs text-amber-300">انقر على العنصر في القائمة اليمنى ثم انقر على ما يناسبه في القائمة اليسرى:</p>`;
+  html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+  
+  html += `<div class="space-y-2" id="left-column">`;
+  q.pairs.forEach((p, idx) => {
+    html += `<div onclick="selectMatchingLeft(${idx})" id="match-left-${idx}" class="match-item p-3 bg-slate-800 border border-cyan-500/30 rounded-lg text-sm text-cyan-200 font-bold flex justify-between items-center">${p.left} <i class="fa-solid fa-link text-xs text-slate-500"></i></div>`;
+  });
+  html += `</div>`;
+
+  html += `<div class="space-y-2" id="right-column">`;
+  shuffledRight.forEach((rText, idx) => {
+    html += `<div onclick="selectMatchingRight('${rText.replace(/'/g, "\\'")}', this)" class="match-item p-3 bg-slate-800 border border-slate-700 rounded-lg text-sm text-slate-300 flex justify-between items-center">${rText}</div>`;
+  });
+  html += `</div></div>`;
+
+  answerArea.innerHTML = html;
+}
+
+function selectMatchingLeft(idx) {
+  document.querySelectorAll("#left-column .match-item").forEach(el => el.classList.remove("selected"));
+  const item = document.getElementById(`match-left-${idx}`);
+  if (item.classList.contains("matched")) return;
+  item.classList.add("selected");
+  selectedLeft = idx;
+}
+
+function selectMatchingRight(rightText, element) {
+  if (selectedLeft === null || element.classList.contains("matched")) return;
+
+  const leftItem = document.getElementById(`match-left-${selectedLeft}`);
+  leftItem.classList.remove("selected");
+  leftItem.classList.add("matched");
+  element.classList.add("matched");
+
+  userPairs[questionsData[currentQuestionIndex].pairs[selectedLeft].left] = rightText;
+  selectedLeft = null;
+  matchedCount++;
+
+  if (matchedCount === questionsData[currentQuestionIndex].pairs.length) {
+    checkMatchingAnswer();
+  }
+}
+
+function checkMatchingAnswer() {
+  const q = questionsData[currentQuestionIndex];
+  let isAllCorrect = true;
+  q.pairs.forEach(p => {
+    if (userPairs[p.left] !== p.right) isAllCorrect = false;
+  });
+  showFeedback(isAllCorrect, q.rationale);
+}
+
+// التحقق من إجابة صح/خطأ و الاختيار من متعدد
+function checkAnswer(userChoice) {
+  const q = questionsData[currentQuestionIndex];
+  const buttons = document.querySelectorAll(".answer-btn");
+  buttons.forEach(btn => btn.disabled = true);
+
+  let isCorrect = (userChoice === q.correct);
+
+  if (q.type === "tf") {
+    if (userChoice === true) buttons[0].classList.add(isCorrect ? "correct-btn" : "wrong-btn");
+    else buttons[1].classList.add(isCorrect ? "correct-btn" : "wrong-btn");
+  } else if (q.type === "mcq") {
+    buttons[userChoice].classList.add(isCorrect ? "correct-btn" : "wrong-btn");
+    if (!isCorrect) buttons[q.correct].classList.add("correct-btn");
+  }
+
+  showFeedback(isCorrect, q.rationale);
+}
+
+// عرض التغذية الراجعة
+function showFeedback(isCorrect, rationale) {
+  const feedbackBox = document.getElementById("feedback-box");
+  const feedbackContent = document.getElementById("feedback-content");
+  const rationaleContent = document.getElementById("rationale-content");
+
+  feedbackBox.classList.remove("hidden");
+  
+  if (isCorrect) {
+    playSound('correct');
+    score++;
+    feedbackBox.className = "p-4 rounded-xl text-center space-y-3 bg-emerald-950/80 border border-emerald-500/40";
+    feedbackContent.className = "text-lg font-bold text-emerald-400";
+    feedbackContent.innerHTML = `<i class="fa-solid fa-circle-check text-2xl mr-2"></i> إجابة صحيحة! أحسنت صنعاً.`;
+  } else {
+    playSound('wrong');
+    feedbackBox.className = "p-4 rounded-xl text-center space-y-3 bg-rose-950/80 border border-rose-500/40";
+    feedbackContent.className = "text-lg font-bold text-rose-400";
+    feedbackContent.innerHTML = `<i class="fa-solid fa-circle-xmark text-2xl mr-2"></i> إجابة غير دقيقة!`;
+  }
+
+  rationaleContent.innerText = rationale;
+  updateHeader();
+}
+
+// الانتقال للسؤال التالي أو إنهاء اللعبة
+function nextQuestion() {
+  currentQuestionIndex++;
+  if (currentQuestionIndex < questionsData.length) {
+    renderQuestion();
+  } else {
+    endGame();
+  }
+}
+
+// نهاية اللعبة وتوليد الشهادة
+function endGame() {
+  clearInterval(timerInterval);
+  document.getElementById("screen-game").classList.add("hidden");
+  document.getElementById("stats-header").classList.add("hidden");
+  document.getElementById("screen-cert").classList.remove("hidden");
+
+  document.getElementById("cert-student-name").innerText = studentName;
+  document.getElementById("cert-score").innerText = `${score} / ${questionsData.length}`;
+
+  const percentage = (score / questionsData.length) * 100;
+  let gradeText = "";
+  if (percentage >= 90) gradeText = "التقدير: ممتاز مرتفع 🏆";
+  else if (percentage >= 75) gradeText = "التقدير: جيد جداً مرتفع 🌟";
+  else if (percentage >= 60) gradeText = "التقدير: جيد 👏";
+  else gradeText = "التقدير: يحتاج لمراجعة النص 📖";
+
+  document.getElementById("cert-grade").innerText = gradeText;
+
+  const mins = Math.floor(secondsElapsed / 60);
+  const secs = secondsElapsed % 60;
+  document.getElementById("cert-time").innerText = `زمن الإنجاز: ${mins} دقيقة و ${secs} ثانية | تاريخ الإصدار: ${new Date().toLocaleDateString('ar-EG')}`;
+
+  // إطلاق الألعاب النارية احتفالاً بالإنهاء
+  confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+}
+
+// إعادة التحدي
+function restartGame() {
+  document.getElementById("screen-cert").classList.add("hidden");
+  document.getElementById("screen-welcome").classList.remove("hidden");
+}
+</script>
+</body>
+  </html>2
